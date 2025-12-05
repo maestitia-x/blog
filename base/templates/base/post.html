@@ -2,5 +2,81 @@
 
 
 {% block content %}
+    <div style="max-width: 900px; margin: 0 auto; padding: 2rem;">
+        <!-- Yazi Gorseli -->
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}"
+                 style="width: 100%; height: 100%; object-fit: cover; border: 10px; margin-bottom: 2rem ">
 
+        {% endif %}
+        <!-- Baslik -->
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;"> {{ post.title }}</h1>
+
+        <!-- Bilgiler -->
+        <div style="color: #666; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #eee">
+            <p>
+                👤 <strong>{{ post.author.username }}</strong> |
+                📅 {{ post.created_at|date:"d F Y" }} |
+                👁️ {{ post.views }} Goruntulenme
+                {% if post.category %}
+                    | 📂 {{ post.category.name }}
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Icerik -->
+        <div style="line-height: 1.8; font-size: 1.1rem; color:#333">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <hr style="margin: 3rem 0;">
+
+        <!-- Yorumlar Bolumu -->
+        <h3> Yorumlar ({{ comments.count }})</h3>
+
+        {% if comments %}
+            {% for comment in comments %}
+                <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin-bottom: 1rem">
+                    <strong>{{ comment.author.username }}</strong>
+                    <span style="color: #999; font-size: 0.9rem"> - {{ comment.created_at|date:'d M Y H:i' }}</span>
+                    <p style="margin-top:0.5rem;"> {{ comment.content }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #999">Henuz yorum yok. Ilk yorumu siz yapin!</p>
+        {% endif %}
+
+        {# Yorum Formu #}
+        {% if user.is_authenticated %}
+            <div style="margin-top: 2rem; background: #e3f2fd; padding: 1.5rem; border-radius: 8px">
+                <h4>Yorum Yap</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <textarea name="content" rows="4"
+                              style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px;"
+                              placeholder="Yorumunuzu Yazin..."></textarea>
+
+                    <button type="submit"
+                            style="background: #4CAF50; color: white;padding: 0.8rem 2rem; border:none; border-radius: 5px; margin-top: 1rem; cursor: pointer">
+                        Gonder
+                    </button>
+                </form>
+
+            </div>
+        {% else %}
+        <p style="text-align: center; margin-top: 2rem; color: #999">
+        Yorum yapmak icin <a href="/admin/">Giris yapin</a>
+        </p>
+
+        {% endif %}
+
+    <!-- Geri Don Butonu -->
+    <div style="text-align:center; margin-top: 3rem;">
+        <a href="{% url 'posts' %}"
+        style="background: #2196F3; color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 5px;">
+        <- Tum Yazilara don
+        </a>
+    </div>
+
+    </div>
 {% endblock %}

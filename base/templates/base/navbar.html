@@ -1,2 +1,47 @@
-<h1>Navbar Placeholder</h1>
-<hr>
+<nav style="background: #333; padding: 1rem; margin-bottom: 2rem;">
+    <div style="max-width: 1200px; margin:0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <a href="" style="color:white; text-decoration:none; font-size:1.5rem; font-weight:bold">
+            Blog Sitem
+        </a>
+        <div style="display:flex; gap:2rem;">
+            <a href="" style="color:white; text-decoration: none;">Ana Sayfa</a>
+            <a href="" style="color:white; text-decoration: none;">Tum Yazilar</a>
+
+        {% if user.is_authenticated %}
+            <a href="" style="color: white; text-decoration:none;">Profilim</a>
+            <a href="" style="color:white; text-decoration: none;">Admin</a>
+            <span>👤 {{ user.username }}</span>
+        {% else %}
+            <a href="" style="color:white; text-decoration:none">Giris Yap</a>
+
+        {% endif %}
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+{#<nav style="background: #333; padding: 1rem; margin-bottom: 2rem;">#}
+{#    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">#}
+{#        <a href="{% url 'home' %}" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold;">#}
+{#            📝 Blog Sitem#}
+{#        </a>#}
+{##}
+{#        <div style="display: flex; gap: 2rem;">#}
+{#            <a href="{% url 'home' %}" style="color: white; text-decoration: none;">Ana Sayfa</a>#}
+{#            <a href="{% url 'posts' %}" style="color: white; text-decoration: none;">Tüm Yazılar</a>#}
+{##}
+{#            {% if user.is_authenticated %}#}
+{#                <a href="{% url 'profile' %}" style="color: white; text-decoration: none;">Profilim</a>#}
+{#                <a href="/admin/" style="color: white; text-decoration: none;">Admin</a>#}
+{#                <span style="color: #4CAF50;">👤 {{ user.username }}</span>#}
+{#            {% else %}#}
+{#                <a href="/admin/" style="color: white; text-decoration: none;">Giriş Yap</a>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+{#</nav>#}

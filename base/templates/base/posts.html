@@ -3,4 +3,64 @@
 
 {% block content %}
 
+    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+
+        <h1 style="margin-bottom: 2rem">Tum Blog Yazilari</h1>
+        <!-- Kategori Filtresi -->
+
+        <div style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap">
+            <strong>Kategoriler:</strong>
+            {% for category in categories %}
+                <a href="?category={{ category.id }}"
+                   style="background: #e3f2fd; padding: 0.5rem 1rem; border-radius: 20px;text-decoration: none; color: #1976d2;">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+            <a href="{% url 'posts' %}" style="color: #666; text-decoration: underline;">Tumu</a>
+        </div>
+
+        <!--Yazi listesi-->
+        {% if posts %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem">
+                {% for post in posts %}
+                    <div>
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}"
+                                 style="width: 100%; height: 200px; object-fit: cover">
+
+                        {% else %}
+                            <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                                📝
+                            </div>
+
+                        {% endif %}
+
+                        <div style="padding: 1.5rem">
+                            <!-- Kategori -->
+                            {% if post.category %}
+                                <span style="background: #fff3cd; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem">
+                    {{ post.category.name }}
+                    </span>
+                            {% endif %}
+                            <h3 style="margin: 1rem 0 0.5rem 0;"> {{ post.title }}</h3>
+                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
+                                👤 {{ post.author.username }} |
+                                📅 {{ post.created_at|date:"d M Y" }}
+                            </p>
+                            <p style="color: #333;"> {{ post.excerpt|truncatewords:15 }}</p>
+                            <a href="{% url 'post' post.slug %}" style="background: #4CAF50; color: white; padding: 0.5rem 1rem; text-decoration: none;
+border-radius: 5px; display: inline-block; margin-bottom: 1rem;">
+                                Devamını Oku →
+                            </a>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        {% else %}
+            <p style="text-align: center; padding: 3rem; color: #999">Yazi bulunamadi</p>
+        {% endif %}
+    </div>
+
 {% endblock %}
