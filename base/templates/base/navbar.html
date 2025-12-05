@@ -4,15 +4,15 @@
             Blog Sitem
         </a>
         <div style="display:flex; gap:2rem;">
-            <a href="" style="color:white; text-decoration: none;">Ana Sayfa</a>
-            <a href="" style="color:white; text-decoration: none;">Tum Yazilar</a>
+            <a href="{% url 'home' %}" style="color:white; text-decoration: none;">Ana Sayfa</a>
+            <a href="{% url 'posts' %}" style="color:white; text-decoration: none;">Tum Yazilar</a>
 
         {% if user.is_authenticated %}
-            <a href="" style="color: white; text-decoration:none;">Profilim</a>
-            <a href="" style="color:white; text-decoration: none;">Admin</a>
+            <a href="{% url 'profile' %}" style="color: white; text-decoration:none;">Profilim</a>
+            <a href="/admin/" style="color:white; text-decoration: none;">Admin</a>
             <span>👤 {{ user.username }}</span>
         {% else %}
-            <a href="" style="color:white; text-decoration:none">Giris Yap</a>
+            <a href="/admin/" style="color:white; text-decoration:none">Giris Yap</a>
 
         {% endif %}
         </div>

@@ -37,6 +37,17 @@ def post(request, slug):
 
     # Yorumlari getir
     comments =post_obj.comments.filter(active=True)
+
+    if request.method == "POST" and request.user.is_authenticated:
+        Comment.objects.create(
+            post = post_obj,
+            author = request.user,
+            content = request.POST.get('content'),
+            active= True
+        )
+        messages.success(request, 'Yorumunuz basariyla kaydedildi')
+        return redirect('post', slug=slug)
+
     context={
         'post':post_obj,
         'comments':comments
