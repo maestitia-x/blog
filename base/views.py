@@ -39,15 +39,17 @@ def post(request, slug):
     comments =post_obj.comments.filter(active=True)
 
     if request.method == "POST" and request.user.is_authenticated:
-        Comment.objects.create(
-            post = post_obj,
-            author = request.user,
-            content = request.POST.get('content'),
-            active= True
-        )
-        messages.success(request, 'Yorumunuz basariyla kaydedildi')
-        return redirect('post', slug=slug)
-
+        content = request.POST.get('content', '').strip()
+        if content: 
+            Comment.objects.create(
+                post = post_obj,
+                author = request.user,
+                content = content,
+                active= True )
+            messages.success(request, 'Yorumunuz basariyla kaydedildi')
+            return redirect('post', slug=slug)
+        else:
+            messages.error(request, 'Yorum bos olamaz!')
     context={
         'post':post_obj,
         'comments':comments
