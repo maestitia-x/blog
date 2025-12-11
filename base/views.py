@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -9,6 +10,7 @@ def home(request):
     """Ana Sayfa - En Son 6 Blog Yazisi"""
     posts = Post.objects.filter(published=True)[:6]
     categories = Category.objects.all()
+
     context = {
         'posts':posts,
         'categories':categories
@@ -21,9 +23,22 @@ def posts(request):
     all_posts = Post.objects.filter(published=True)
     categories = Category.objects.all()
 
+    # BURADAN BAŞLAYIN - Arama mantığını ekleyin
+    # 1. Arama kelimesini al (request.GET.get...)
+    # 2. Eğer arama kelimesi varsa (if ...)
+    # 3. Veritabanında ara (Q objects kullan)
+    search_text = request.GET.get('search','')
+    if search_text:
+        all_posts = all_posts.filter(Q(content__icontains = search_text) | Q(title__icontains=search_text))
+
+
+
+
+
     context = {
         'posts':all_posts,
-        'categories':categories
+        'categories':categories,
+        'search_query': search_text
     }
     return render(request, 'base/posts.html', context)
 

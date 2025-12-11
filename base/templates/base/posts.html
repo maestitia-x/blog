@@ -6,6 +6,34 @@
     <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
 
         <h1 style="margin-bottom: 2rem">Tum Blog Yazilari</h1>
+
+        {#    Arama filtresi#}
+        <form action="" method="GET" style="">
+
+
+            <input type="text" name="search" placeholder="Ara..." value="{{ search_query }}"
+                   style="padding: 0.8rem; width: 300px; border: 2px solid #ddd; border-radius: 5px;">
+            <button type="submit"
+                    style="background: #4CAF50; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer;">
+                Ara
+            </button>
+        </form>
+
+        {% if search_query %}
+            <a href="{% url 'posts' %}" style="margin-left: 1rem; color: #666; text-decoration: underline;"> Aramayi
+                Temizle </a>
+
+            {% if posts %}
+                <p>"{{ search_query }}" için {{ posts|length }} kadar sonuc bulundu.</p>
+            {% else %}
+                <p>"{{ search_query }}" için sonuc bulunamadi 😔.</p>
+            {% endif %}
+
+
+
+        {% endif %}
+
+
         <!-- Kategori Filtresi -->
 
         <div style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap">
