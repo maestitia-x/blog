@@ -85,3 +85,14 @@ def profile(request):
         context = {}
     return render(request, 'base/profile.html', context)
 
+
+def category(request, id):
+    category_obj = get_object_or_404(Category, id=id )
+    posts = category_obj.posts.filter(published=True)
+
+
+    context = {
+        'category': category_obj,
+        'posts':posts,
+    }
+    return render(request, 'base/category.html', context=context)
