@@ -1,9 +1,11 @@
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Post, Category, Comment
 from django.core.paginator import Paginator
+from django.contrib.auth import login, logout, authenticate
 
 
 # Create your views here.
@@ -11,7 +13,6 @@ def home(request):
     """Ana Sayfa - En Son 6 Blog Yazisi"""
     posts = Post.objects.filter(published=True)
     categories = Category.objects.all()
-
 
     paginator = Paginator(posts, 6)
     page_number = request.GET.get('page', 1)
@@ -116,6 +117,65 @@ def category(request, id):
     context = {
         'category': category_obj,
         'posts': page_obj,
-        'all_posts':posts
+        'all_posts': posts
     }
     return render(request, 'base/category.html', context=context)
+
+
+def login_view(request):
+    # Kullanıcı adı + şifre kontrol
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST )
+
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+                messages.success(request, f'{user.username} Basariyla giris yaptiniz!')
+                return redirect('home')
+            else:
+                messages.error(request, 'There is no user!')
+                return redirect('login')
+    else:
+        form = AuthenticationForm()
+    # Eğer doğruysa → giriş yap
+    # Değilse → hata mesajı
+
+    context = {
+        'form': form
+    }
+    return render(request, 'base/login.html', context)
+
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        # Form doldurma
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f"Hos geldiniz {user.username}! Hesabiniz basariyla olusturuldu")
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'base/register.html', context)
+
+    # Kullanıcı oluştur
+    # Otomatik giriş yap
+    pass
+
+
+def logout_view(request):
+    # Çıkış yap
+    logout(request)
+    # Ana sayfaya yönlendir
+    messages.success(request, 'Basariyla cikis yaptiniz')
+    return redirect('home')
+

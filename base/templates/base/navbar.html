@@ -9,10 +9,10 @@
 
         {% if user.is_authenticated %}
             <a href="{% url 'profile' %}" style="color: white; text-decoration:none;">Profilim</a>
-            <a href="/admin/" style="color:white; text-decoration: none;">Admin</a>
+            <a href="{% url 'logout' %}" style="color:white; text-decoration: none;">Cikis yap</a>
             <span>👤 {{ user.username }}</span>
         {% else %}
-            <a href="/admin/" style="color:white; text-decoration:none">Giris Yap</a>
+            <a href="{% url 'login' %}" style="color:white; text-decoration:none">Giris Yap</a>
 
         {% endif %}
         </div>
