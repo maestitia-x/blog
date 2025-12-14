@@ -14,14 +14,15 @@
                 <h3>Kategoriler</h3>
                 <div style="display: flex; gap: 1rem; flex-wrap: nowrap">
                     {% for category in categories %}
-                        <span style="background: #e3f2fd; padding: 0.5rem 1rem; border-radius: 20px;">{{ category.name }}</span>
+                        <a href="{% url 'category' category.id %}"
+                           style="background: #e3f2fd; padding: 0.5rem 1rem; border-radius: 20px;">{{ category.name }}</a>
                     {% endfor %}
                 </div>
             </div>
         {% endif %}
 
         <!-- Blog Yazilari -->
-        <h2 style="margin-bottom:2rem;">Son Yazilar</h2>
+        <h2 style="margin-bottom: 2rem">Son Yazilar</h2>
         {% if posts %}
             <div>
                 {% for post in posts %}
@@ -56,6 +57,22 @@
                 {% endfor %}
 
             </div>
+
+            {% if posts.has_other_pages %}
+                <div style="text-align:center; margin-top:3rem; display: flex; gap:1rem; justify-content: center; align-items: center">
+
+                    {% if posts.has_previous %}
+                        <a href="?page={{ posts.previous_page_number }}"
+                           style="background:#2196F3; color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px">Onceki</a>
+                    {% endif %}
+
+                    <span style="color: #666">{{ posts.number }} / {{ posts.paginator.num_pages }}</span>
+                    {% if posts.has_next %}
+                        <a style="padding: 0.8rem 1.5rem; background:#2196F3; color: white; text-decoration: none; border-radius: 5px "
+                           href="?page={{ posts.next_page_number }}">Sonraki</a>
+                    {% endif %}
+                </div>
+            {% endif %}
         {% else %}
             <p style="text-align: center; padding: 3rem; color: #999; font-size: 1.2rem">
                 Henuz bir blog yazisi yok
@@ -63,5 +80,3 @@
         {% endif %}
     </div>
 {% endblock %}
-
-

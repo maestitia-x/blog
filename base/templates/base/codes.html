@@ -1,0 +1,11 @@
+ {% if posts.has_previous %}
+    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if ??? %}category={{ ??? }}&{% endif %}page={{ ??? }}">
+        Önceki
+    </a>
+{% endif %}
+
+{% if posts.has_next %}
+    <a href="?{% if ??? %}search={{ ??? }}&{% endif %}{% if ??? %}category={{ ??? }}&{% endif %}page={{ ??? }}">
+        Sonraki
+    </a>
+{% endif %}

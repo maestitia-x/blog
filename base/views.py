@@ -3,44 +3,62 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Post, Category, Comment
+from django.core.paginator import Paginator
 
 
 # Create your views here.
 def home(request):
     """Ana Sayfa - En Son 6 Blog Yazisi"""
-    posts = Post.objects.filter(published=True)[:6]
+    posts = Post.objects.filter(published=True)
     categories = Category.objects.all()
 
+
+    paginator = Paginator(posts, 6)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'posts':posts,
-        'categories':categories
+        'posts': page_obj,
+        'categories': categories,
+
     }
 
     return render(request, 'base/home.html', context)
+
 
 def posts(request):
     """Tum Blog Yazilari"""
     all_posts = Post.objects.filter(published=True)
     categories = Category.objects.all()
 
-    # BURADAN BAŞLAYIN - Arama mantığını ekleyin
-    # 1. Arama kelimesini al (request.GET.get...)
-    # 2. Eğer arama kelimesi varsa (if ...)
-    # 3. Veritabanında ara (Q objects kullan)
-    search_text = request.GET.get('search','')
+    # Arama filtresi
+    search_text = request.GET.get('search', '')
     if search_text:
-        all_posts = all_posts.filter(Q(content__icontains = search_text) | Q(title__icontains=search_text))
+        all_posts = all_posts.filter(Q(content__icontains=search_text) | Q(title__icontains=search_text))
 
+    # Kategori filtresi
+    category_id = request.GET.get('category', '')
+    if category_id:
+        all_posts = all_posts.filter(category_id=category_id)
 
+    # PAGINATION - BURAYA YAZIN!
+    # 1. Paginator oluştur (her sayfada 9 yazı)
+    paginator = Paginator(object_list=all_posts, per_page=6)
 
+    # 2. Sayfa numarasını al
+    page_number = request.GET.get('page', 1)
 
+    # 3. O sayfayı getir
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'posts':all_posts,
-        'categories':categories,
-        'search_query': search_text
+        'posts': page_obj,
+        'categories': categories,
+        'search_query': search_text,
+        'selected_category': category_id
     }
     return render(request, 'base/posts.html', context)
+
 
 def post(request, slug):
     """Tek bir blog yazisi detayi"""
@@ -51,23 +69,23 @@ def post(request, slug):
     post_obj.save()
 
     # Yorumlari getir
-    comments =post_obj.comments.filter(active=True)
+    comments = post_obj.comments.filter(active=True)
 
     if request.method == "POST" and request.user.is_authenticated:
         content = request.POST.get('content', '').strip()
-        if content: 
+        if content:
             Comment.objects.create(
-                post = post_obj,
-                author = request.user,
-                content = content,
-                active= True )
+                post=post_obj,
+                author=request.user,
+                content=content,
+                active=True)
             messages.success(request, 'Yorumunuz basariyla kaydedildi')
             return redirect('post', slug=slug)
         else:
             messages.error(request, 'Yorum bos olamaz!')
-    context={
-        'post':post_obj,
-        'comments':comments
+    context = {
+        'post': post_obj,
+        'comments': comments
     }
     return render(request, 'base/post.html', context)
 
@@ -78,7 +96,7 @@ def profile(request):
         user_posts = Post.objects.filter(author=request.user)
         user = request.user
         context = {
-            'user_posts':user_posts,
+            'user_posts': user_posts,
             'user': user
         }
     else:
@@ -87,12 +105,17 @@ def profile(request):
 
 
 def category(request, id):
-    category_obj = get_object_or_404(Category, id=id )
+    category_obj = get_object_or_404(Category, id=id)
     posts = category_obj.posts.filter(published=True)
 
+    # paginator
+    paginator = Paginator(posts, 6)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'category': category_obj,
-        'posts':posts,
+        'posts': page_obj,
+        'all_posts':posts
     }
     return render(request, 'base/category.html', context=context)

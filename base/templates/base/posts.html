@@ -86,9 +86,50 @@ border-radius: 5px; display: inline-block; margin-bottom: 1rem;">
                 {% endfor %}
 
             </div>
+
+            <!-- PAGINATION KONTROLLER -->
+            {% if posts.has_other_pages %}
+                <div style="text-align: center; margin-top: 3rem; display: flex; gap: 1rem; justify-content: center; align-items: center">
+                    {% if posts.has_previous %}
+                        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ posts.previous_page_number }}"
+                           style="background:#2196F3; color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px">Onceki</a>
+                    {% endif %}
+
+                    <span style="color: #666">
+                        Sayfa {{ posts.number }} / {{ posts.paginator.num_pages }}
+                    </span>
+                    {% if posts.has_next %}
+                        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ posts.next_page_number }}"
+                           style="background:#2196F3; color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px">
+                            Sonraki
+                        </a>
+                    {% endif %}
+                </div>
+
+
+            {% endif %}
         {% else %}
             <p style="text-align: center; padding: 3rem; color: #999">Yazi bulunamadi</p>
         {% endif %}
     </div>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
